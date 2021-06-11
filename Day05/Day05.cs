@@ -4,15 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace Day05
 {
     class Day05
     {
-
+        MD5 _md5;
         public Day05()
         {
-            LoadData();
+            _md5 = System.Security.Cryptography.MD5.Create();
         }
 
         public void Part1()
@@ -27,6 +28,7 @@ namespace Day05
                 if (md5.StartsWith("00000"))
                 {
                     sb.Append(md5[5]);
+                    Console.WriteLine("{0}", sb.ToString());
                 }
                 index++;
             }
@@ -61,23 +63,14 @@ namespace Day05
             Console.WriteLine("Part2: {0}", pwd.ToString());
         }
 
-        public static string CreateMD5(string input)
+        public string CreateMD5(string input)
         {
             // Use input string to calculate MD5 hash
-            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
-            {
-                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-                byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-                // Convert the byte array to hexadecimal string
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < hashBytes.Length; i++)
-                {
-                    sb.Append(hashBytes[i].ToString("X2"));
-                }
-                return sb.ToString();
-            }
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+            byte[] hashBytes = _md5.ComputeHash(inputBytes);
+            return BitConverter.ToString(hashBytes).Replace("-","");
         }
+
         private void LoadData()
         {
             string inputFile = AppDomain.CurrentDomain.BaseDirectory + @"..\..\test.txt";
